@@ -119,9 +119,9 @@ class tool_forcedcache_cache_administration_helper extends core_cache\administra
 
         $html .= $OUTPUT->heading(get_string('page_rulesets', 'tool_forcedcache'), 2);
 
-        $html .= $this->generate_mode_table(cache_store::MODE_APPLICATION, $config);
-        $html .= $this->generate_mode_table(cache_store::MODE_SESSION, $config);
-        $html .= $this->generate_mode_table(cache_store::MODE_REQUEST, $config);
+        $html .= $this->generate_mode_table(\core_cache\store::MODE_APPLICATION, $config);
+        $html .= $this->generate_mode_table(\core_cache\store::MODE_SESSION, $config);
+        $html .= $this->generate_mode_table(\core_cache\store::MODE_REQUEST, $config);
 
         $html .= $this->generate_override_table($config['definitionoverrides']);
         return html_writer::tag('div', $html);
@@ -205,15 +205,15 @@ class tool_forcedcache_cache_administration_helper extends core_cache\administra
         $rules = $config['rules'];
         // Assign a bitmask to rule keys.
         switch ($mode) {
-            case cache_store::MODE_APPLICATION:
+            case \core_cache\store::MODE_APPLICATION:
                 $ruletype = 'application';
                 break;
 
-            case cache_store::MODE_SESSION:
+            case \core_cache\store::MODE_SESSION:
                 $ruletype = 'session';
                 break;
 
-            case cache_store::MODE_REQUEST:
+            case \core_cache\store::MODE_REQUEST:
                 $ruletype = 'request';
                 break;
         }

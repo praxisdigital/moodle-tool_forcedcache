@@ -22,7 +22,7 @@
  * @copyright   Catalyst IT
  * @license     http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
-class tool_forcedcache_cache_config_writer extends cache_config_writer {
+class tool_forcedcache_cache_config_writer extends \core_cache\config_writer {
     /**
      * Overriding this means nothing gets Written.
      * This must still work if we fallback to core caching.

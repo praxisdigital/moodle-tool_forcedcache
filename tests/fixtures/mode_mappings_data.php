@@ -27,17 +27,17 @@ defined('MOODLE_INTERNAL') || die();
 
 $defaultsexpected = [
     [
-        'mode' => cache_store::MODE_APPLICATION,
+        'mode' => \core_cache\store::MODE_APPLICATION,
         'store' => 'default_application',
         'sort' => -1,
     ],
     [
-        'mode' => cache_store::MODE_SESSION,
+        'mode' => \core_cache\store::MODE_SESSION,
         'store' => 'default_session',
         'sort' => -1,
     ],
     [
-        'mode' => cache_store::MODE_REQUEST,
+        'mode' => \core_cache\store::MODE_REQUEST,
         'store' => 'default_request',
         'sort' => -1,
     ],
@@ -45,17 +45,17 @@ $defaultsexpected = [
 
 $generatedmodemappingagainstdefinitionmatchtoprulesetexpected = [
     [
-        'mode' => cache_store::MODE_APPLICATION,
+        'mode' => \core_cache\store::MODE_APPLICATION,
         'store' => 'file-test',
         'sort' => -1,
     ],
     [
-        'mode' => cache_store::MODE_SESSION,
+        'mode' => \core_cache\store::MODE_SESSION,
         'store' => 'default_session',
         'sort' => -1,
     ],
     [
-        'mode' => cache_store::MODE_REQUEST,
+        'mode' => \core_cache\store::MODE_REQUEST,
         'store' => 'default_request',
         'sort' => -1,
     ],
