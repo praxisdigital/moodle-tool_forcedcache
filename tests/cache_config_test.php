@@ -64,7 +64,7 @@ final class cache_config_test extends \advanced_testcase {
 
         // First try loading a file in an invalid config path.
         $CFG->tool_forcedcache_config_path = realpath(__DIR__ . '/../config.json');
-        $this->expectException(\cache_exception::class);
+        $this->expectException(\core_cache\exception\cache_exception::class);
         $this->expectExceptionMessage(get_string('config_json_path_invalid', 'tool_forcedcache', [
             'path' => $CFG->tool_forcedcache_config_path,
             'dirroot' => $CFG->dirroot,
@@ -113,7 +113,7 @@ final class cache_config_test extends \advanced_testcase {
 
         // Now lets point to a garbled file.
         $CFG->tool_forcedcache_config_path = $this->copy_to_valid_config_location(__DIR__ . '/../classes/cache_factory.php');
-        $this->expectException(\cache_exception::class);
+        $this->expectException(\core_cache\exception\cache_exception::class);
         $this->expectExceptionMessage(get_string('config_json_parse_fail', 'tool_forcedcache'));
         $method->invoke($config);
     }
@@ -135,7 +135,7 @@ final class cache_config_test extends \advanced_testcase {
 
         // Now try a non-existent file.
         $CFG->tool_forcedcache_config_path = sys_get_temp_dir() . DIRECTORY_SEPARATOR . 'forcedcache_cache_config-fake.json';
-        $this->expectException(\cache_exception::class);
+        $this->expectException(\core_cache\exception\cache_exception::class);
         $this->expectExceptionMessage(get_string('config_json_missing', 'tool_forcedcache'));
         $method->invoke($config);
     }
@@ -176,7 +176,7 @@ final class cache_config_test extends \advanced_testcase {
         include(__DIR__ . '/fixtures/stores_data.php');
 
         // Now test a store with a bad type.
-        $this->expectException(\cache_exception::class);
+        $this->expectException(\core_cache\exception\cache_exception::class);
         $this->expectExceptionMessage(get_string('store_bad_type', 'tool_forcedcache', 'faketype'));
         $storearr1 = $method->invoke($config, $storebadtype['input']);
         $this->assertNull($storearr1);
@@ -194,7 +194,7 @@ final class cache_config_test extends \advanced_testcase {
         include(__DIR__ . '/fixtures/stores_data.php');
 
         // Now test a store with a missing required field.
-        $this->expectException(\cache_exception::class);
+        $this->expectException(\core_cache\exception\cache_exception::class);
         $this->expectExceptionMessage(get_string('store_missing_fields', 'tool_forcedcache', 'apcutest'));
         $storearr1 = $method->invoke($config, $storemissingfield['input']);
         $this->assertNull($storearr1);

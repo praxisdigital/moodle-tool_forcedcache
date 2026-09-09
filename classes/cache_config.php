@@ -24,7 +24,7 @@
  * @copyright   Catalyst IT
  * @license     http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
-class tool_forcedcache_cache_config extends cache_config {
+class tool_forcedcache_cache_config extends \core_cache\config {
     /**
      * Array to track errors thrown during store instantiation.
      *
@@ -139,7 +139,7 @@ class tool_forcedcache_cache_config extends cache_config {
      * Exceptions are thrown so that caching will fallback to core.
      *
      * @return array Associative array of configuration from JSON or config.
-     * @throws cache_exception
+     * @throws \core_cache\exception\cache_exception
      */
     public static function read_config_file(): array {
         global $CFG;
@@ -148,12 +148,12 @@ class tool_forcedcache_cache_config extends cache_config {
 
         // If path and array are defined, explode, only one can exist.
         if ($arrayexists && $pathexists) {
-            throw new cache_exception(get_string('config_path_and_array', 'tool_forcedcache'));
+            throw new \core_cache\exception\cache_exception(get_string('config_path_and_array', 'tool_forcedcache'));
         } else if ($arrayexists) {
             // Check that atleast stores and rules are defined.
             $array = $CFG->tool_forcedcache_config_array;
             if (!array_key_exists('stores', $array) || !array_key_exists('rules', $array)) {
-                throw new cache_exception(get_string('config_array_parse_fail', 'tool_forcedcache'));
+                throw new \core_cache\exception\cache_exception(get_string('config_array_parse_fail', 'tool_forcedcache'));
             }
 
             // If definitionoverrides is missing (optional), instantiate as empty.
@@ -171,7 +171,7 @@ class tool_forcedcache_cache_config extends cache_config {
         // If the json file path is inside dirroot, throw an exception. This
         // should not be allowed as it would expose the configuration.
         if (!empty($path) && strpos($path, $CFG->dirroot) !== false) {
-            throw new cache_exception(get_string('config_json_path_invalid', 'tool_forcedcache', [
+            throw new \core_cache\exception\cache_exception(get_string('config_json_path_invalid', 'tool_forcedcache', [
                 'path' => $path,
                 'dirroot' => $CFG->dirroot,
             ]));
@@ -189,10 +189,10 @@ class tool_forcedcache_cache_config extends cache_config {
 
                 return $config;
             } else {
-                throw new cache_exception(get_string('config_json_parse_fail', 'tool_forcedcache'));
+                throw new \core_cache\exception\cache_exception(get_string('config_json_parse_fail', 'tool_forcedcache'));
             }
         } else {
-            throw new cache_exception(get_string('config_json_missing', 'tool_forcedcache'));
+            throw new \core_cache\exception\cache_exception(get_string('config_json_missing', 'tool_forcedcache'));
         }
     }
 
@@ -202,7 +202,7 @@ class tool_forcedcache_cache_config extends cache_config {
      *
      * @param array $stores the array of stores declared in the JSON file.
      * @return array a mapped configuration array of store instances.
-     * @throws cache_exception
+     * @throws \core_cache\exception\cache_exception
      */
     private function generate_store_instance_config(array $stores): array {
         $storesarr = [];
@@ -212,7 +212,7 @@ class tool_forcedcache_cache_config extends cache_config {
                 !(array_key_exists('type', $store) &&
                   array_key_exists('config', $store))
             ) {
-                throw new cache_exception(get_string('store_missing_fields', 'tool_forcedcache', $name));
+                throw new \core_cache\exception\cache_exception(get_string('store_missing_fields', 'tool_forcedcache', $name));
             }
 
             $storearr = [];
@@ -234,7 +234,7 @@ class tool_forcedcache_cache_config extends cache_config {
                 strpos($cachepath, $expectedbase) !== 0 ||
                 !file_exists($cachepath)
             ) {
-                throw new cache_exception(
+                throw new \core_cache\exception\cache_exception(
                     get_string('store_bad_type', 'tool_forcedcache', $store['type'])
                 );
             }
@@ -277,17 +277,17 @@ class tool_forcedcache_cache_config extends cache_config {
         // Use the defaults from core.
         $modemappings = [
             [
-                'mode' => cache_store::MODE_APPLICATION,
+                'mode' => \core_cache\store::MODE_APPLICATION,
                 'store' => 'default_application',
                 'sort' => -1,
             ],
             [
-                'mode' => cache_store::MODE_SESSION,
+                'mode' => \core_cache\store::MODE_SESSION,
                 'store' => 'default_session',
                 'sort' => -1,
             ],
             [
-                'mode' => cache_store::MODE_REQUEST,
+                'mode' => \core_cache\store::MODE_REQUEST,
                 'store' => 'default_request',
                 'sort' => -1,
             ],
@@ -304,9 +304,9 @@ class tool_forcedcache_cache_config extends cache_config {
      */
     private function generate_mode_mapping(array $rules): array {
         $modetostr = [
-            cache_store::MODE_APPLICATION => 'application',
-            cache_store::MODE_SESSION => 'session',
-            cache_store::MODE_REQUEST => 'request',
+            \core_cache\store::MODE_APPLICATION => 'application',
+            \core_cache\store::MODE_SESSION => 'session',
+            \core_cache\store::MODE_REQUEST => 'request',
         ];
 
         // Use the defaults from core.
@@ -347,15 +347,15 @@ class tool_forcedcache_cache_config extends cache_config {
 
             // Decide on ruleset based on mode.
             switch ($mode) {
-                case cache_store::MODE_APPLICATION:
+                case \core_cache\store::MODE_APPLICATION:
                     $ruleset = $rules['application'];
                     break;
 
-                case cache_store::MODE_SESSION:
+                case \core_cache\store::MODE_SESSION:
                     $ruleset = $rules['session'];
                     break;
 
-                case cache_store::MODE_REQUEST:
+                case \core_cache\store::MODE_REQUEST:
                     $ruleset = $rules['request'];
             }
 
@@ -418,7 +418,9 @@ class tool_forcedcache_cache_config extends cache_config {
                     // Check if this can be localised.
                     $definition = $definitions[$mapping['definition']];
                     if (empty($definition['canuselocalstore']) || !$definition['canuselocalstore']) {
-                        throw new cache_exception(get_string('store_not_ready', 'tool_forcedcache', $storename));
+                        throw new \core_cache\exception\cache_exception(
+                            get_string('store_not_ready', 'tool_forcedcache', $storename)
+                        );
                     } else {
                         // This mapping can be deleted, and the default fallthrough used.
                         // If the above exception is ever thrown, the config is hosed anyway.
@@ -466,7 +468,7 @@ class tool_forcedcache_cache_config extends cache_config {
                     $definitions[$definition][$key] = $item;
                 }
             } else {
-                throw new cache_exception(get_string('definition_not_found', 'tool_forcedcache', $definition));
+                throw new \core_cache\exception\cache_exception(get_string('definition_not_found', 'tool_forcedcache', $definition));
             }
         }
 

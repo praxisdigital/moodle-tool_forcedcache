@@ -22,7 +22,7 @@
  * @copyright   Catalyst IT
  * @license     http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
-class tool_forcedcache_cache_factory extends cache_factory {
+class tool_forcedcache_cache_factory extends \core_cache\factory {
     /**
      * This is a copy of the core class, with the classes swapped out.
      * TODO: Refactor core method to accept class param, and call parent with param.
@@ -98,7 +98,7 @@ class tool_forcedcache_cache_factory extends cache_factory {
 
         if (is_null(self::$displayhelper)) {
             if (!empty($SESSION->tool_forcedcache_caching_exception)) {
-                self::$displayhelper = new core_cache\administration_helper();
+                self::$displayhelper = new \core_cache\local\administration_display_helper();
             } else {
                 self::$displayhelper = new tool_forcedcache_cache_administration_helper();
             }
@@ -125,9 +125,9 @@ class tool_forcedcache_cache_factory extends cache_factory {
     /**
      * Don't care about disabled caching, the writer is just here to provide purging.
      *
-     * @return cache_config_writer
+     * @return \core_cache\config_writer
      */
-    public static function get_disabled_writer(): cache_config_writer {
+    public static function get_disabled_writer(): \core_cache\config_writer {
         $factoryinstance = new tool_forcedcache_cache_factory();
         return $factoryinstance->create_config_instance(true);
     }
